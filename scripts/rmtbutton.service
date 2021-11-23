@@ -1,0 +1,10 @@
+[Unit]
+Description=Remote button service
+
+[Service]
+ExecStart=/opt/hg/arduino_nano/usb_button/scripts/usb_button.sh
+Type=simple
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
