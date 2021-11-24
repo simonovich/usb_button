@@ -7,25 +7,34 @@
 #
 cd `dirname $0`
 curdir=`pwd`
+
+# This adds traps for SIGINT and SIGTERM and causes the exit command to run if our script receives those signals,
+# which in turn will trigger the EXIT trap and run kill 0,
+# which will kill the current script and all the background processes.
+# The ERR trap is optional. It is effectively equivalent to set -e and will cause our script to exit on error.
+#
+#trap "exit" INT TERM ERR
+trap "kill 0" EXIT
+
 #
 # Load MQTT and Device settings
 #
 source settings.sh
 if [[ $? == 1 ]]; then
-  echo 'Please, create Settings.sh and write the parameters into it:';
-  echo '';
-  echo "MQTT_SERVER='your_mqtt_broker' # mqtt.by";
-  echo "MQTT_PORT=your_mqtt_port # 1883, 1884, 1885, 1886, 1887, 1888, 1889";
-  echo "MQTT_USER='your_mqtt_login' # user login";
-  echo "MQTT_PASS='your_mqtt_password' # user password";
-  echo "MQTT_LOC_CLIENT_ID='your_local_id' # local client id";
-  echo "MQTT_RM_CLIENT_ID='your_remote_id' # remote client id";
-  echo "MQTT_LOC_TOPIC='local_topic_name' # topic for your device";
-  echo "MQTT_RMT_TOPIC='remote_topic_name' # topic for remote device";
-  echo "MQTT_LOG='path_to_log_file' # log for incoming MQTT messages";
-  echo '';
-  echo "USB_PORT='your_port' # Serial port (by sample /dev/ttyUSB0 or /dev/ttyACM0)";
-  echo '';
+  echo 'Please, create Settings.sh and write the parameters into it:'
+  echo ''
+  echo "MQTT_SERVER='your_mqtt_broker' # mqtt.by"
+  echo "MQTT_PORT=your_mqtt_port # 1883, 1884, 1885, 1886, 1887, 1888, 1889"
+  echo "MQTT_USER='your_mqtt_login' # user login"
+  echo "MQTT_PASS='your_mqtt_password' # user password"
+  echo "MQTT_LOC_CLIENT_ID='your_local_id' # local client id"
+  echo "MQTT_RM_CLIENT_ID='your_remote_id' # remote client id"
+  echo "MQTT_LOC_TOPIC='local_topic_name' # topic for your device"
+  echo "MQTT_RMT_TOPIC='remote_topic_name' # topic for remote device"
+  echo "MQTT_LOG='path_to_log_file' # log for incoming MQTT messages"
+  echo ''
+  echo "USB_PORT='your_port' # Serial port (by sample /dev/ttyUSB0 or /dev/ttyACM0)"
+  echo ''
   exit;
 fi
 

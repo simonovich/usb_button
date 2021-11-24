@@ -1,47 +1,51 @@
 #!/bin/bash
 
+SRV_NAME='rmtbutton'
+
 cd `dirname $0`
 curdir=`pwd`
 
-if [[ ! $1 || ! $@ == *'.profile'* ]]; then
-  echo 'Missed params!'
+if [[ $1 == '--help' ]]; then
   echo 'Type this and run:'
-  echo "sudo $0 \$USER && source ~/.profile"
+  echo "$0 && source ~/.profile"
   exit
 fi
-curuser=$1
 
-SRV_NAME='rmtbutton'
-
-if [[ "$EUID" -ne 0 ]]
-  then echo "Please run as root"
-  exit
-fi
+# if [[ "$EUID" -ne 0 ]]
+#   then echo "Please run as root"
+#   exit
+# fi
 
 # Set permission
 chmod +x *.sh
 
 # Set environment
-if [[ -z `grep 'USB_BUTTON_HOME' /home/$curuser/.profile` ]] ; then
-    export USB_BUTTON_HOME="$curdir";
-    echo '' >> /home/$curuser/.profile;
-    echo '# USB Button path' >> /home/$curuser/.profile;
-    echo "export USB_BUTTON_HOME='$curdir'" >> /home/$curuser/.profile;
-    echo "Env Variable USB_BUTTON_HOME created";
+if [[ -z `grep 'USB_BUTTON_HOME' ~/.profile` ]] ; then
+  echo '' >> ~/.profile
+  echo '# USB Button path' >> ~/.profile
+  echo "export USB_BUTTON_HOME='$curdir'" >> ~/.profile
+  echo "USB_BUTTON_HOME added to .profile"
+fi
+
+if [[ ! $USB_BUTTON_HOME ]]; then
+  export USB_BUTTON_HOME="$curdir"
+  systemctl --user import-environment USB_BUTTON_HOME
+  echo "USB_BUTTON_HOME added to current session"
 fi
 
 # Copy to system folder
-cp $SRV_NAME.service /etc/systemd/system/$SRV_NAME.service
+mkdir -p ~/.config/systemd/user/
+cp $SRV_NAME.service ~/.config/systemd/user/$SRV_NAME.service
 
 # Register service and run
-if [[ `systemctl is-enabled $SRV_NAME` == 'enabled' ]]; then
-  systemctl enable $SRV_NAME
+if [[ `systemctl --user is-enabled $SRV_NAME` == 'enabled' ]]; then
+  systemctl --user enable $SRV_NAME
   echo "Service $SRV_NAME enabled"
 fi
-if [[ `systemctl is-active $SRV_NAME` == 'active' ]]; then
-  systemctl stop $SRV_NAME
+if [[ `systemctl --user is-active $SRV_NAME` == 'active' ]]; then
+  systemctl --user stop $SRV_NAME
   echo "Service $SRV_NAME stopped"
 fi
-systemctl daemon-reload
-systemctl start $SRV_NAME
-systemctl status $SRV_NAME
+systemctl --user daemon-reload
+systemctl --user start $SRV_NAME
+systemctl --user status $SRV_NAME
