@@ -28,7 +28,7 @@ if [[ $? == 1 ]]; then
   echo "MQTT_USER='your_mqtt_login' # user login"
   echo "MQTT_PASS='your_mqtt_password' # user password"
   echo "MQTT_LOC_CLIENT_ID='your_local_id' # local client id"
-  echo "MQTT_RM_CLIENT_ID='your_remote_id' # remote client id"
+  echo "MQTT_RMT_CLIENT_ID='your_remote_id' # remote client id"
   echo "MQTT_LOC_TOPIC='local_topic_name' # topic for your device"
   echo "MQTT_RMT_TOPIC='remote_topic_name' # topic for remote device"
   echo "MQTT_LOG='path_to_log_file' # log for incoming MQTT messages"
