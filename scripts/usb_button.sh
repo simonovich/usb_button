@@ -38,11 +38,14 @@ if [[ $? == 1 ]]; then
   exit;
 fi
 
+NUMOFLINES=0
+if [[ -e $MQTT_LOG ]]; then
+  NUMOFLINES=$(wc -l < $MQTT_LOG)
+fi
+
 # Subscribe
 `mosquitto_sub -h $MQTT_SERVER -p $MQTT_PORT -u $MQTT_USER -P $MQTT_PASS -I $MQTT_LOC_CLIENT_ID -v -d -t $MQTT_LOC_TOPIC >> $MQTT_LOG &`
 echo 'MQTT subscription activated'
-
-NUMOFLINES=$(wc -l < $MQTT_LOG)
 
 # USB Serial listing...
 echo "Connect to $USB_PORT..."

@@ -41,6 +41,11 @@ fi
 mkdir -p ~/.config/systemd/user/
 cp $SRV_NAME.service ~/.config/systemd/user/$SRV_NAME.service
 
+# Check required apps
+if ! [ -x "$(command -v mosquitto_pub)" ]; then
+  sudo apt install mosquitto_clients -y
+fi
+
 # Register service and run
 if [[ `systemctl --user is-enabled $SRV_NAME` == 'disabled' ]]; then
   systemctl --user enable $SRV_NAME
