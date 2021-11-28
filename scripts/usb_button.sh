@@ -44,7 +44,7 @@ if [[ -e $MQTT_LOG ]]; then
 fi
 
 # Subscribe
-`mosquitto_sub -h $MQTT_SERVER -p $MQTT_PORT -u $MQTT_USER -P $MQTT_PASS -I $MQTT_LOC_CLIENT_ID -v -d -t $MQTT_LOC_TOPIC >> $MQTT_LOG &`
+mosquitto_sub -h $MQTT_SERVER -p $MQTT_PORT -u $MQTT_USER -P $MQTT_PASS -I $MQTT_LOC_CLIENT_ID -v -d -t $MQTT_LOC_TOPIC >> $MQTT_LOG &
 echo 'MQTT subscription activated'
 
 # USB Serial listing...
@@ -88,7 +88,9 @@ echo "Serial port" $USB_PORT " is opened"
 
     if [[ $? -le 128 ]]; then
       # Send response to MQTT
-      mosquitto_pub -h $MQTT_SERVER -u $MQTT_USER -P $MQTT_PASS -p $MQTT_PORT -I $MQTT_RMT_CLIENT_ID -r -d -t $MQTT_RMT_TOPIC -m $rs_serial
+      if [[ $rs_serial == '1' || $rs_serial == '0' ]]; then
+        mosquitto_pub -h $MQTT_SERVER -u $MQTT_USER -P $MQTT_PASS -p $MQTT_PORT -I $MQTT_RMT_CLIENT_ID -r -d -t $MQTT_RMT_TOPIC -m $rs_serial
+      fi
     fi
   done
   echo "USB connection lost..."
