@@ -48,7 +48,7 @@ mosquitto_sub -h $MQTT_SERVER -p $MQTT_PORT -u $MQTT_USER -P $MQTT_PASS -I $MQTT
 echo 'MQTT subscription activated'
 
 # USB Serial listing...
-echo "Connect to $USB_PORT..."
+echo 'Connect to $USB_PORT...'
 until [[ -e "$USB_PORT" ]]; do
   sleep 1;
 done
@@ -59,9 +59,10 @@ stty -F $USB_PORT -opost -isig -icanon -iexten -echo -echoe -echok -echoctl -ech
 exec 99<>$USB_PORT #(or /dev/ttyUSB0...etc)
 echo "Serial port" $USB_PORT " is opened"
   # MQTT inbox listing...
-  echo "MQTT inbox listing..."
+  echo 'MQTT inbox listing...'
   while :
   do
+    sleep 2
     if [[ ! -e "$USB_PORT" ]]; then
       break;
     fi
@@ -72,14 +73,16 @@ echo "Serial port" $USB_PORT " is opened"
       NUMOFLINES=$NEWLINE
       # get last line from MQTT log
       LASTCOMMAND=$(tail -n1 $MQTT_LOG)
-      echo "New MQTT command is found"
+      echo 'New MQTT command is found'
       echo $LASTCOMMAND
       # Parse line and get last word
       LASTCOMMAND=$(echo $LASTCOMMAND | grep -oE '[^[:space:]]+$')
       # Send last command to Serial
-      echo $LASTCOMMAND >&99
-
-      sleep 0.1
+      if [[ $LASTCOMMAND == '1' || $LASTCOMMAND == '0' ]]; then
+        sleep 1
+        echo $LASTCOMMAND >&99
+        echo "The command $LASTCOMMAND has been send"
+      fi
     fi
 
     # Read response from Serial
