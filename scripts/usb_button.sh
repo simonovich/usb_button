@@ -48,7 +48,7 @@ mosquitto_sub -h $MQTT_SERVER -p $MQTT_PORT -u $MQTT_USER -P $MQTT_PASS -I $MQTT
 echo 'MQTT subscription activated'
 
 # USB Serial listing...
-echo 'Connect to $USB_PORT...'
+echo "Connect to $USB_PORT..."
 until [[ -e "$USB_PORT" ]]; do
   sleep 1;
 done
